@@ -1,7 +1,7 @@
 /*
     The Arweave World Event Logger.
     
-    A bot for extracting 
+    A bot for extracting and storing links and messages from Discord discussions.
 */
 
 const Discord = require('discord.js')
@@ -74,8 +74,10 @@ async function archiveLink(link, txid) {
         let tx = await arweave.createTransaction({ data: res.data }, wallet)
         tx.addTag("app-name", "AWEL")
         tx.addTag("type", "page")
-        tx.addTag("Content-Type", "text/html")
         tx.addTag("trigger-message", txid)
+        tx.addTag("Content-Type", "text/html")
+        tx.addTag("page:url", link)
+        tx.addTag("page:timestamp", Math.floor(Date.now() / 1000).toString())
         sendTX(tx)
     })
     .catch(error => {
